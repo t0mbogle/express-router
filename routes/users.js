@@ -62,9 +62,18 @@ router.put('/users/:id', (req, res) => {
 })
 
 // delete
-// router.delete('/users/:id', (req, res) => {
-//     const deleteUser = (req.params.id - 1);
-    
-// })
+router.delete('/users/:id', (req, res) => {
+    const deleteUser = (req.params.id - 1);
+    try {
+        if (users.length < 1) {
+            throw new Error("No user data available to be deleted")
+        } else {
+            users.splice(deleteUser, 1);
+            res.status(200).send({ msg: "User successfully deleted", deleteUserId: (deleteUser + 1) })
+        }
+    } catch (error) {
+        res.status(400).send({ err: error.message })
+    }
+})
 
 module.exports = router;

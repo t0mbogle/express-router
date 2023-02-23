@@ -61,6 +61,18 @@ router.put('/fruits/:id', (req, res) => {
 })
 
 // delete
-
+router.delete('/fruits/:id', (req, res) => {
+    const deleteFruit = (req.params.id - 1);
+    try {
+        if (fruits.length < 1) {
+            throw new Error("No fruit data available to be deleted")
+        } else {
+            fruits.splice(deleteFruit, 1);
+            res.status(200).send({ msg: "Fruit successfully deleted", deleteFruitId: (deleteFruit + 1) })
+        }
+    } catch (error) {
+        res.status(400).send({ err: error.message })
+    }
+})
 
 module.exports = router;
