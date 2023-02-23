@@ -46,9 +46,25 @@ router.post('/users', (req, res) => {
 })
 
 // update
-
+router.put('/users/:id', (req, res) => {
+    let oldUser = users[req.params.id -1];
+    let updatedUser = req.body;
+    try {
+        if (!req.body.name || !req.body.age) {
+            throw new Error("Please enter valid information to update a user")
+        } else {
+            oldUser = updatedUser;
+            res.status(200).send({ msg: "User successfully updated", oldUser })
+        }
+    } catch (error) {
+        res.status(400).send({ err: error.message })
+    }
+})
 
 // delete
-
+// router.delete('/users/:id', (req, res) => {
+//     const deleteUser = (req.params.id - 1);
+    
+// })
 
 module.exports = router;
