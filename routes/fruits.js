@@ -1,3 +1,4 @@
+const { check, validationResult } = require('express-validator')
 const express = require('express');
 const router = express.Router();
 
@@ -30,17 +31,25 @@ router.get('/fruits/:id', (req, res) => {
 })
 
 // create
-router.post('/fruits', (req, res) => {
+router.post('/fruits', [check("color").not().isEmpty().trim()], (req, res) => {
     const newFruit = req.body
-    try {
-        if (!req.body.name || !req.body.color) {
-            throw new Error("Please enter valid fruit information")
-        } else {
-            fruits.push(newFruit);
-            res.status(201).send({ msg: "Fruit successfully added", newFruit});
+
+    const errors = validationResult(req) // extracts validation errors from check()^
+    if (!errors.isEmpty()) {
+        res.json({ error: errors.array() })
+    } else {
+
+        try {
+            if (!req.body.name || !req.body.color) { // if either name or color is falsy
+                throw new Error("Please enter valid fruit information")
+            } else {
+                fruits.push(newFruit);
+                res.status(201).send({ msg: "Fruit successfully added", fruits});
+            }
+        } catch (error) {
+            res.status(400).send({ err: error.message })
         }
-    } catch (error) {
-        res.status(400).send({ err: error.message })
+
     }
 })
 

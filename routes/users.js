@@ -1,3 +1,4 @@
+const { check, validationResult } = require('express-validator')
 const express = require('express');
 const router = express.Router();
 
@@ -31,17 +32,25 @@ router.get('/users/:id', (req, res) => {
 })
 
 // create
-router.post('/users', (req, res) => {
+router.post('/users', [check("name").not().isEmpty().trim()], (req, res) => {
     const newUser = req.body
-    try {
-        if (!req.body.name || !req.body.age) {
-            throw new Error("Please enter valid user information")
-        } else {
-            users.push(newUser);
-            res.status(201).send({ msg: "User successfully added", newUser});
+
+    const errors = validationResult(req) // extracts validation errors from check()^
+    if (!errors.isEmpty()) {
+        res.json({ error: errors.array() })
+    } else {
+
+        try {
+            if (!req.body.name || !req.body.age) { // if either name or age is falsy
+                throw new Error("Please enter valid user information")
+            } else {
+                users.push(newUser);
+                res.status(201).send({ msg: "User successfully added", users });
+            }
+        } catch (error) {
+            res.status(400).send({ err: error.message })
         }
-    } catch (error) {
-        res.status(400).send({ err: error.message })
+
     }
 })
 
