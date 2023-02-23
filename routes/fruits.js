@@ -29,4 +29,13 @@ router.get('/fruits/:id', (req, res) => {
     res.status(200).send(specificFruit)
 })
 
+// create
+
+
+// update
+
+
+// delete
+
+
 module.exports = router;
